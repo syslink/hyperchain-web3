@@ -1,0 +1,25 @@
+{
+  "name": "hyperchain-web3",
+  "version": "1.0.0",
+  "description": "hyperchain web3 JS api",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/syslink/hyperchain-web3.git"
+  },
+  "author": "Sam",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/syslink/hyperchain-web3/issues"
+  },
+  "homepage": "https://github.com/syslink/hyperchain-web3#readme",
+  "dependencies": {
+    "eth-crypto": "^1.3.3",
+    "ethereumjs-abi": "^0.6.7",
+    "ethereumjs-util": "^6.1.0",
+    "bignumber.js": "^8.0.2"
+  }
+}
