@@ -17,10 +17,10 @@ export async function postToNode(dataToNode) {
     throw 'RPC调用失败：' + dataToNode.data;
   }
   const response = await resp.json();
-  if (response.error != null) {
-    throw response.error.message;
+  if (response.code < 0) {
+    throw response.message;
   }
-  return response.result;
+  return response;
 }
 
 function bytes2Hex(array) {
