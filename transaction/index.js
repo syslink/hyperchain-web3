@@ -21,7 +21,7 @@ export function getDiscardTransactions() {
   });
 }
 
-export function tx_getTransactionByHash(txHash) {
+export function getTransactionByHash(txHash) {
   const dataToSrv = JSON.stringify({ jsonrpc: '2.0',
     namespace: 'global',
     method: 'block_getBlockByHash',
@@ -156,6 +156,6 @@ export function getBatchReceipt(hashes) {
   });
 }
 
-export default { getTransactions, getDiscardTransactions, tx_getTransactionByHash, getTransactionByBlockHashAndIndex, 
+export default { getTransactions, getDiscardTransactions, getTransactionByHash, getTransactionByBlockHashAndIndex, 
   getTransactionByBlockNumberAndIndex, getTransactionsCount, getTxAvgTimeByBlockNumber, getTransactionReceipt, getBlockTransactionCountByHash, 
   getSignHash, getTransactionsByTime, getDiscardTransactionsByTime, getBatchTransactions, getBatchReceipt }
