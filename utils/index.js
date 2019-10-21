@@ -1,5 +1,6 @@
 import * as EthUtil from 'ethereumjs-util';
 import * as EthCrypto from 'eth-crypto';
+import * as abiUtil from 'ethereumjs-abi';
 import BigNumber from 'bignumber.js';
 let provider = 'http://127.0.0.1:8081';
 
