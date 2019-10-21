@@ -1,4 +1,4 @@
-
+import * as utils from '../utils';
 export function latestBlock() {
   const dataToSrv = JSON.stringify({ jsonrpc: '2.0',
     namespace: 'global',

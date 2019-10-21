@@ -1,5 +1,6 @@
 import * as EthUtil from 'ethereumjs-util';
 import * as EthCrypto from 'eth-crypto';
+import * as Transaction from '../transaction';
 import BigNumber from 'bignumber.js';
 let provider = 'http://127.0.0.1:8081';
 
@@ -20,7 +21,7 @@ export async function postToNode(dataToNode) {
   if (response.code < 0) {
     throw response.message;
   }
-  return response;
+  return response.result;
 }
 
 function bytes2Hex(array) {
@@ -148,29 +149,30 @@ export function checkPrefix(origin) {
 }
 
 export function getTimestamp() {
-  const timestamp = new Date().getTime() + Math.floor((Math.random() * 1000) + 1000000);
-  return new BigNumber(timestamp).shiftedBy(6);
+  const timestamp = new Date().getTime();
+  return new BigNumber(timestamp).shiftedBy(6).plus(new BigNumber(Math.floor(Math.random() * 1000000)));
 }
 
 export function getNonce() {
-  let nonceStr = 1;
+  let nonceStr = '1';
   for (let i = 0; i < 15; i++) {
-    nonceStr += Math.floor(Math.random() * 100) % 9;
+    nonceStr += Math.floor(Math.random() * 100) % 9 + '';
   }
   return new BigNumber(nonceStr);
 }
 
 export function getTxString(txInfo) {
   let txStr = 'from=' + checkPrefix(txInfo.from.toLowerCase());
-  txStr += '&to=' + txInfo.to != null ? checkPrefix(txInfo.to.toLowerCase()) : '';
+  txStr += '&to=' + (!isEmptyObj(txInfo.to) ? checkPrefix(txInfo.to.toLowerCase()) : '0x0');
   const value = isEmptyObj(txInfo.payload) ? txInfo.value : txInfo.payload;
   txStr += '&value=' + checkPrefix(value);
-  txStr += '&timestamp=' + isEmptyObj(txInfo.timestamp) ? checkPrefix(getTimestamp().toString(16)) : checkPrefix(new BigNumber(txInfo.timestamp).toString(16));
+  txStr += '&timestamp=' + checkPrefix(isEmptyObj(txInfo.timestamp) ? getTimestamp().toString(16) : new BigNumber(txInfo.timestamp).toString(16));
 
-  txStr += '&nonce=' + checkPrefix(isEmptyObj(txInfo.nonce) ? getNonce().toString(16) : checkPrefix(new BigNumber(txInfo.nonce).toString(16)));
-  txStr += '&opcode=' + txInfo.opCode;
-  txStr += '&extra=' + isEmptyObj(txInfo.extra) ? '' : txInfo.extra;
-  txStr += '&vmtype=' + isEmptyObj(txInfo.vmType) ? '' : txInfo.vmType;
+  txStr += '&nonce=' + checkPrefix(isEmptyObj(txInfo.nonce) ? getNonce().toString(16) : new BigNumber(txInfo.nonce).toString(16));
+
+  txStr += '&opcode=' + (isEmptyObj(txInfo.opCode) ? 0 : txInfo.opCode);
+  txStr += '&extra=' + (isEmptyObj(txInfo.extra) ? '' : txInfo.extra);
+  txStr += '&vmtype=' + (isEmptyObj(txInfo.vmType) ? 'EVM' : txInfo.vmType);
 
   return txStr;
 }
@@ -179,11 +181,18 @@ export function getTxString(txInfo) {
 */
 export async function signTx(txInfo, privateKey) {
   const txStr = getTxString(txInfo);
-  
-  const txHash = EthUtil.sha3(txStr);
+  const txHashBuf = EthUtil.keccak256(txStr);
+  const txHashHex = txHashBuf.toString('hex');
 
-  const signature = EthCrypto.sign(privateKey, txHash);
-  return bytes2Hex([0, signature]);
+  let signature = EthCrypto.sign(privateKey, txHashHex);
+  const sigLength = signature.length;
+  const recoverStr = signature.substr(sigLength - 2);
+  if (recoverStr == '1c') {
+    signature = '00' + signature.substr(2, sigLength - 4) + '01';
+  } else {
+    signature = '00' + signature.substr(2, sigLength - 4) + '00';
+  }
+  return signature;
 }
 
 export async function recoverSignedTx(txInfo, signature) {

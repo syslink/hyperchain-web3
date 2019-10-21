@@ -1,3 +1,5 @@
+import * as utils from '../utils';
+
 export function getTCert(pubkey) {
   const dataToSrv = JSON.stringify({ jsonrpc: '2.0',
     namespace: 'global',

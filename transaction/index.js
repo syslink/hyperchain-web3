@@ -1,3 +1,4 @@
+import * as utils from '../utils';
 
 export function getTransactions(fromBlock, toBlock) {
   const dataToSrv = JSON.stringify({ jsonrpc: '2.0',
@@ -98,9 +99,15 @@ export function getBlockTransactionCountByHash(blockHash) {
 }
 
 export function getSignHash(from, to, nonce, extra, value, payload, timestamp) {
-  let signInfo = {from, to, nonce, extra, value, timestamp};
+  let signInfo = {from, nonce, value, timestamp};
   if (value == null) {
-    signInfo = {from, to, nonce, extra, payload, timestamp};
+    signInfo = {from, nonce, payload, timestamp};
+  }
+  if (to != null) {
+    signInfo['to'] = to;
+  }
+  if (extra != null) {
+    signInfo['extra'] = extra;
   }
   const dataToSrv = JSON.stringify({ jsonrpc: '2.0',
     namespace: 'global',

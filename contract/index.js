@@ -11,11 +11,14 @@ export function compileContract(contractCode) {
   });
 }
 
-export function deployContract(txInfo, privateKey) {
+export async function deployContract(txInfo, privateKey) {
+  txInfo.from = utils.checkPrefix(txInfo.from);
   txInfo.nonce = utils.getNonce().toNumber();
   txInfo.timestamp = utils.getTimestamp().toNumber();
-  const signature = utils.signTx(txInfo, privateKey);
+  const signature = await utils.signTx(txInfo, privateKey);
   txInfo.signature = signature;
+  txInfo.type = 'EVM';
+  txInfo.simulate = false;
   
   const dataToSrv = JSON.stringify({ jsonrpc: '2.0',
     namespace: 'global',
@@ -27,11 +30,14 @@ export function deployContract(txInfo, privateKey) {
   });
 }
 
-export function invokeContract(txInfo, privateKey) {
+export async function invokeContract(txInfo, privateKey) {
+  txInfo.from = utils.checkPrefix(txInfo.from);
+  txInfo.to = utils.checkPrefix(txInfo.to);
   txInfo.nonce = utils.getNonce().toNumber();
   txInfo.timestamp = utils.getTimestamp().toNumber();
-  const signature = utils.signTx(txInfo, privateKey);
+  const signature = await utils.signTx(txInfo, privateKey);
   txInfo.signature = signature;
+  txInfo.type = 'EVM';
 
   const dataToSrv = JSON.stringify({ jsonrpc: '2.0',
     namespace: 'global',
