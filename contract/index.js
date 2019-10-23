@@ -13,8 +13,8 @@ export function compileContract(contractCode) {
 
 export async function deployContract(txInfo, privateKey) {
   txInfo.from = utils.checkPrefix(txInfo.from);
-  txInfo.nonce = utils.getNonce().toNumber();
-  txInfo.timestamp = utils.getTimestamp().toNumber();
+  txInfo.nonce = txInfo.nonce != null ? txInfo.nonce : utils.getNonce().toNumber();
+  txInfo.timestamp = txInfo.timestamp != null ? txInfo.timestamp : utils.getTimestamp().toNumber();
   const signature = await utils.signTx(txInfo, privateKey);
   txInfo.signature = signature;
   txInfo.type = 'EVM';
@@ -33,8 +33,8 @@ export async function deployContract(txInfo, privateKey) {
 export async function invokeContract(txInfo, privateKey) {
   txInfo.from = utils.checkPrefix(txInfo.from);
   txInfo.to = utils.checkPrefix(txInfo.to);
-  txInfo.nonce = utils.getNonce().toNumber();
-  txInfo.timestamp = utils.getTimestamp().toNumber();
+  txInfo.nonce = txInfo.nonce != null ? txInfo.nonce : utils.getNonce().toNumber();
+  txInfo.timestamp = txInfo.timestamp != null ? txInfo.timestamp : utils.getTimestamp().toNumber();
   const signature = await utils.signTx(txInfo, privateKey);
   txInfo.signature = signature;
   txInfo.type = 'EVM';
@@ -49,11 +49,30 @@ export async function invokeContract(txInfo, privateKey) {
   });
 }
 
-export function maintainContract(txInfo, privateKey) {
-  txInfo.nonce = utils.getNonce().toNumber();
-  txInfo.timestamp = utils.getTimestamp().toNumber();
-  const signature = utils.signTx(txInfo, privateKey);
+export async function invokeContractWithoutPK(txInfo) {
+  txInfo.from = utils.checkPrefix(txInfo.from);
+  txInfo.to = utils.checkPrefix(txInfo.to);
+  txInfo.type = 'EVM';
+
+  const dataToSrv = JSON.stringify({ jsonrpc: '2.0',
+    namespace: 'global',
+    method: 'contract_invokeContract',
+    params: [txInfo],
+    id: 1 });
+  return utils.postToNode({
+    data: dataToSrv,
+  });
+}
+
+export async function maintainContract(txInfo, privateKey) {
+  txInfo.from = utils.checkPrefix(txInfo.from);
+  txInfo.to = utils.checkPrefix(txInfo.to);
+  txInfo.nonce = txInfo.nonce != null ? txInfo.nonce : utils.getNonce().toNumber();
+  txInfo.timestamp = txInfo.timestamp != null ? txInfo.timestamp : utils.getTimestamp().toNumber();
+  const signature = await utils.signTx(txInfo, privateKey);
   txInfo.signature = signature;
+  txInfo.type = 'EVM';
+  txInfo.simulate = false;
 
   const dataToSrv = JSON.stringify({ jsonrpc: '2.0',
     namespace: 'global',
@@ -130,5 +149,5 @@ export function getDeployedList(accountAddr) {
     data: dataToSrv,
   });
 }
-export default { compileContract, deployContract, invokeContract, maintainContract, 
+export default { compileContract, deployContract, invokeContract, invokeContractWithoutPK, maintainContract, 
                  getCode, getContractCountByAddr, getStatus, getCreator, getCreateTime, getDeployedList }

@@ -170,7 +170,7 @@ export function getTxString(txInfo) {
 
   txStr += '&nonce=' + checkPrefix(isEmptyObj(txInfo.nonce) ? getNonce().toString(16) : new BigNumber(txInfo.nonce).toString(16));
 
-  txStr += '&opcode=' + (isEmptyObj(txInfo.opCode) ? 0 : txInfo.opCode);
+  txStr += '&opcode=' + (isEmptyObj(txInfo.opcode) ? 0 : txInfo.opcode);
   txStr += '&extra=' + (isEmptyObj(txInfo.extra) ? '' : txInfo.extra);
   txStr += '&vmtype=' + (isEmptyObj(txInfo.vmType) ? 'EVM' : txInfo.vmType);
 
