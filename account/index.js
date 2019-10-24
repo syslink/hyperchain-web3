@@ -194,7 +194,7 @@ export async function exportPrivateKey(address, password) {
     return null;
   }
   for (const ksInfoObj of keystoreInfoObj.keyList) {
-    if (ksInfoObj.address == address) {
+    if (utils.isEqualAddress(ksInfoObj.address, address)) {
       const wallet = await ethers.Wallet.fromEncryptedJson(JSON.stringify(ksInfoObj), password);
       return wallet.privateKey;
     }
@@ -205,7 +205,7 @@ export async function exportPrivateKey(address, password) {
 export async function exportKeystore(address, password) {
   await checkPassword(password, (index) => index === 0);
   for (const ksInfoObj of keystoreInfoObj.keyList) {
-    if (ksInfoObj.address == address) {
+    if (utils.isEqualAddress(ksInfoObj.address, address)) {
       return JSON.stringify(ksInfoObj);
     }
   }
@@ -218,7 +218,7 @@ export async function exportMnemonic(address, password) {
     return null;
   }
   for (const ksInfoObj of keystoreInfoObj.keyList) {
-    if (ksInfoObj.address == address) {
+    if (utils.isEqualAddress(ksInfoObj.address, address)) {
       const wallet = await ethers.Wallet.fromEncryptedJson(JSON.stringify(ksInfoObj), password);
       return wallet.mnemonic;
     }

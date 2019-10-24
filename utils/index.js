@@ -217,6 +217,10 @@ export async function recoverSignedTx(txInfo, signature) {
   return address;
 }
 
+export function isEqualAddress(addressOne, addressTwo) {
+  return checkPrefix(addressOne.toLowerCase()) == checkPrefix(addressTwo.toLowerCase());
+}
+
 export default { isEmptyObj, hex2Bytes, postToNode, getProvider, setProvider, checkPrefix, getTimestamp, getNonce,
                  getContractPayload, getConstructPayload, isValidABI, parseContractTxPayload,
-                 signTx, recoverSignedTx };
+                 signTx, recoverSignedTx, isEqualAddress };
