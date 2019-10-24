@@ -25,7 +25,7 @@ export function getDiscardTransactions() {
 export function getTransactionByHash(txHash) {
   const dataToSrv = JSON.stringify({ jsonrpc: '2.0',
     namespace: 'global',
-    method: 'block_getBlockByHash',
+    method: 'tx_getTransactionByHash',
     params: [txHash],
     id: 1 });
   return utils.postToNode({

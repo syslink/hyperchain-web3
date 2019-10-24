@@ -76,6 +76,10 @@ export function getContractPayload(funcName, parameterTypes, parameterValues) {
   return abiUtil.methodID(funcName, parameterTypes).toString('hex') + abiUtil.rawEncode(parameterTypes, parameterValues).toString('hex');
 }
 
+export function getConstructPayload(parameterTypes, parameterValues) {
+  return abiUtil.rawEncode(parameterTypes, parameterValues).toString('hex');
+}
+
 export function isValidABI(abiInfo) {
   try {
     if (!Array.isArray(abiInfo)) {
@@ -214,5 +218,5 @@ export async function recoverSignedTx(txInfo, signature) {
 }
 
 export default { isEmptyObj, hex2Bytes, postToNode, getProvider, setProvider, checkPrefix, getTimestamp, getNonce,
-                 getContractPayload, isValidABI, parseContractTxPayload,
+                 getContractPayload, getConstructPayload, isValidABI, parseContractTxPayload,
                  signTx, recoverSignedTx };

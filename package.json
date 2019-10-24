@@ -1,6 +1,6 @@
 {
   "name": "hyperchain-web3",
-  "version": "1.0.16",
+  "version": "1.0.18",
   "description": "hyperchain web3 JS api",
   "main": "index.js",
   "scripts": {
