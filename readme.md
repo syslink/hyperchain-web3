@@ -13,6 +13,6 @@ import * as hyperchain from 'hyperchain-web3';
 - hyperchain.node.*
 - hyperchain.subscribe.*
 - hyperchain.transaction.*
-- hyperchain.utils.*
+- hyperchain.utils.*：包含交易签名功能
 
 > rpc文档：https://github.com/hyperchain/hyperchain/blob/master/docs/zh_CN/JSON-RPC_manual.rst
